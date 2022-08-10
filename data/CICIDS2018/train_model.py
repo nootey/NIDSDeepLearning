@@ -30,16 +30,17 @@ class bcolors:
 # DATASET_DIR = os.path.join(os.path.abspath(".."), "datasets/CICIDS2018")
 # MODEL_DIR = os.path.join(os.path.abspath(".."), "model/saved_models")
 # DATASET_NAME = 'cleaned_ids2018_sampled.csv'
-RESULT_DIR = os.path.join(os.path.abspath(".."), "results")
 
-ROOT_DIR = "D:/School/diplomska_git/"
+ROOT_DIR = "D:/School/diplomska_ml/"
 DATASET_DIR = ROOT_DIR + 'datasets/'
 MODEL_DIR = ROOT_DIR + 'saved_models/'
+DATA_DIR = ROOT_DIR + 'data/'
 DATASET_NAME = 'CICIDS2018'
 PICKLE_DIR = DATASET_DIR + DATASET_NAME + '/'
 PICKLE_DIR = DATASET_DIR + DATASET_NAME + '/'
 
-print(bcolors.OKBLUE + "Reading file" + bcolors.ENDC)
+# optimized, but limited dataset
+# print(bcolors.OKBLUE + "Reading file" + bcolors.ENDC)
 # dataset is already cleaned of nan and infinite values and is scaled to 20%
 #df = pd.read_csv(os.path.join(DATASET_DIR, DATASET_NAME))
 
@@ -89,43 +90,17 @@ for train_index, test_index in sss.split(X=np.zeros(normalized_features.shape[0]
     X_train, X_test = normalized_features[train_index], normalized_features[test_index]
     y_train, y_test = dummy_labels[train_index], dummy_labels[test_index]
 
-print(bcolors.OKBLUE + "Fit model" + bcolors.ENDC)
+print(bcolors.OKBLUE + "Saving test data" + bcolors.ENDC)
+with open(DATA_DIR + DATASET_NAME + '/' + 'X_test.pkl', 'wb') as f:
+    pickle.dump(X_test, f)
+
+with open(DATA_DIR + DATASET_NAME + '/' + 'y_test.pkl', 'wb') as f:
+    pickle.dump(y_test, f)
+
+# print(bcolors.OKBLUE + "Fit model" + bcolors.ENDC)
 # model = model_config(inputDim, y_train.shape)
 
 # model.fit(x=X_train, y=y_train, epochs=epochs, batch_size=batch_size, verbose=1, validation_data=(X_test, y_test))
 
 # print(bcolors.OKBLUE + "Save model" + bcolors.ENDC)
 # model.save(MODEL_DIR + '/' + DATASET_NAME)
-
-print(bcolors.OKBLUE + "Load model" + bcolors.ENDC)
-model = keras.models.load_model(MODEL_DIR + '/' + DATASET_NAME)
-
-
-print(bcolors.OKBLUE + "Predict result" + bcolors.ENDC)
-# Measure model accuracy
-predictions = model.predict(
-    x=X_test,
-    batch_size=batch_size,
-    verbose=1
-)
-rounded_predictions = np.argmax(predictions,axis=1)
-
-print(bcolors.OKBLUE + "Plot confusion matrix" + bcolors.ENDC)
-# create the confusion matrix
-
-# attack_label = ['Benign', 'DDOS attack-HOIC', 'Bot', 'FTP-BruteForce', 'SSH-Bruteforce',
-# 'DoS attacks-GoldenEye', 'DoS attacks-Slowloris', 'DDOS attack-LOIC-UDP', 'Brute Force -Web', 'Brute Force -XSS', 'SQL Injection']
-attack_label = ['Benign', 'DDOS', 'Dos', 'BruteForce', 'Infilteration']
-
-con_mat = tf.math.confusion_matrix(labels=y_test.argmax(axis=1), predictions=rounded_predictions).numpy()
-
-con_mat_norm = np.around(con_mat.astype("float") / con_mat.sum(axis=1)[:, np.newaxis], decimals=4)
-
-con_mat_df = pd.DataFrame(con_mat_norm, index=attack_label, columns=attack_label)
-
-figure = plt.figure(figsize=(8, 8))
-sns.heatmap(con_mat_df, annot=True, cmap=plt.get_cmap("Reds"))
-plt.tight_layout()
-plt.ylabel("True label")
-plt.xlabel("Predicted label")
-plt.show()  

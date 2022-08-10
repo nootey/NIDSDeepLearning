@@ -1,20 +1,9 @@
-# import libraries
-import numpy as np # linear algebra
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
-import os, re, time, math, tqdm, itertools
+# imports
+import numpy as np 
+import pandas as pd 
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import LabelEncoder
-from sklearn.neural_network import MLPClassifier
-import keras
-from keras.layers import Conv2D, Conv1D, MaxPooling2D, MaxPooling1D, Flatten, BatchNormalization, Dense
-from keras.utils.np_utils import to_categorical
-from keras.models import Sequential
-from keras.callbacks import CSVLogger, ModelCheckpoint
 
 # define colors (for readable prints)
 class bcolors:
@@ -37,7 +26,7 @@ def clean_column(column):
     return column
 
 #define paths
-ROOT_DIR = "D:/School/diplomska_git/"
+ROOT_DIR = "D:/School/diplomska_ml/"
 DATASET_DIR = ROOT_DIR + 'datasets/'
 MODEL_DIR = ROOT_DIR + 'saved_models/'
 DATASET_NAME = 'CICIDS2018'
@@ -142,10 +131,6 @@ dtypes = np.dtype([
 
 # fetch the training file
 print(bcolors.WARNING + "Reading files" + bcolors.ENDC)
-# df = pd.read_csv(paths[0])
-# for i in range(1,len(paths)):
-#     temp = pd.read_csv(paths[i])
-#     df = pd.concat([df,temp])
 
 df1 = pd.read_csv(paths[0], dtype=dtypes) #bruteforce
 df2 = pd.read_csv(paths[1], dtype=dtypes) #dos
@@ -205,7 +190,7 @@ df = df.drop(["Timestamp"], axis=1)
 # with open(PICKLE_DIR + DATASET_NAME + '_full.pkl', 'wb') as f:
 #     pickle.dump(df, f)
 
-#save partial dataset
+#save dataset
 print(bcolors.WARNING + "Saving as pickle" + bcolors.ENDC)
 with open(PICKLE_DIR + DATASET_NAME + '_optimized.pkl', 'wb') as f:
     pickle.dump(df, f)

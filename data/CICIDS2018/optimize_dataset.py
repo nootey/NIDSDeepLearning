@@ -6,20 +6,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 from imblearn.over_sampling import SMOTE 
-
-from keras.models import Sequential, load_model
-from keras.layers import Dense, Activation
-from sklearn.model_selection import train_test_split, StratifiedShuffleSplit
-from sklearn.preprocessing import LabelEncoder
-from keras.utils.np_utils import to_categorical, normalize
-from sklearn.utils import shuffle
-from tensorflow.keras.callbacks import TensorBoard
-from timeit import default_timer as timer
-from tensorflow import keras
-from keras.layers import Conv2D, Conv1D, MaxPooling2D, MaxPooling1D, Flatten, BatchNormalization, Dense
-from keras.callbacks import CSVLogger, ModelCheckpoint
-import tensorflow as tf
 from imblearn.over_sampling import SMOTE 
+
 # define colors (for readable prints)
 class bcolors:
     HEADER = '\033[95m'
@@ -41,7 +29,7 @@ def clean_column(column):
     return column
 
 #define paths
-ROOT_DIR = "D:/School/diplomska_git/"
+ROOT_DIR = "D:/School/diplomska_ml/"
 DATASET_DIR = ROOT_DIR + 'datasets/'
 MODEL_DIR = ROOT_DIR + 'saved_models/'
 DATASET_NAME = 'CICIDS2018'
@@ -110,7 +98,7 @@ df = df.dropna()
 print(bcolors.FAIL + "__After inf cleaning - number of null values after cleaning" + bcolors.ENDC)
 print(df.isna().sum().sum())
 
-print(bcolors.OKBLUE + "Sampling data" + bcolors.ENDC)
+print(bcolors.OKBLUE + "Re-sampling data" + bcolors.ENDC)
 benign = df[df['Label'] == 0][:200000]
 ddos = df[df['Label'] == 1][:200000]
 dos = df[df['Label'] == 2][:200000]
