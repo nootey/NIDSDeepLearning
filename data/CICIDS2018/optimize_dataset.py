@@ -34,9 +34,10 @@ DATASET_DIR = ROOT_DIR + 'datasets/'
 MODEL_DIR = ROOT_DIR + 'saved_models/'
 DATASET_NAME = 'CICIDS2018'
 PICKLE_DIR = DATASET_DIR + DATASET_NAME + '/'
+type = 'binary'
 
 print(bcolors.OKBLUE + "Loading pickle" + bcolors.ENDC)
-with open(PICKLE_DIR + DATASET_NAME + '_optimized.pkl', 'rb') as f:
+with open(PICKLE_DIR + DATASET_NAME + '_base.pkl', 'rb') as f:
     df = pickle.load(f)
 
 # print(df['Label'].value_counts())
@@ -63,22 +64,41 @@ print(df.isna().sum().sum())
 #print(df.info())
 
 print(bcolors.OKBLUE + "Mapping attack types" + bcolors.ENDC)
-#define attack map 
-attack_group = {
-    'Benign': 0,
-    'DDOS attack-HOIC': 1,
-    'DDOS attack-LOIC-UDP': 1,
-    'DoS attacks-GoldenEye': 2,
-    'DoS attacks-Hulk': 2,
-    'DoS attacks-Slowloris': 2,
-    'DoS attacks-SlowHTTPTest': 2,
-    'FTP-BruteForce': 3,
-    'SSH-Bruteforce': 3,
-    'Brute Force -Web': 3,
-    'Brute Force -XSS': 3,
-    'SQL Injection': 4,
-    'Infilteration': 4,
-}
+# categorize attack type map
+if(type == 'multi'):
+    attack_group = {
+        'Benign': 0,
+        'DDOS attack-HOIC': 1,
+        'DDOS attack-LOIC-UDP': 1,
+        'DoS attacks-GoldenEye': 2,
+        'DoS attacks-Hulk': 2,
+        'DoS attacks-Slowloris': 2,
+        'DoS attacks-SlowHTTPTest': 2,
+        'FTP-BruteForce': 3,
+        'SSH-Bruteforce': 3,
+        'Brute Force -Web': 3,
+        'Brute Force -XSS': 3,
+        'SQL Injection': 4,
+        'Infilteration': 4,
+    }
+
+if(type == 'binary'):
+    attack_group = {
+        'Benign': 0,
+        'DDOS attack-HOIC': 1,
+        'DDOS attack-LOIC-UDP': 1,
+        'DoS attacks-GoldenEye': 1,
+        'DoS attacks-Hulk': 1,
+        'DoS attacks-Slowloris': 1,
+        'DoS attacks-SlowHTTPTest': 1,
+        'FTP-BruteForce': 1,
+        'SSH-Bruteforce': 1,
+        'Brute Force -Web': 1,
+        'Brute Force -XSS': 1,
+        'SQL Injection': 1,
+        'Infilteration': 1,
+    }
+
 #Benign = 1
 #DDoS = 2
 #DoS = 3
@@ -100,14 +120,23 @@ print(df.isna().sum().sum())
 
 print(bcolors.OKBLUE + "Re-sampling data" + bcolors.ENDC)
 benign = df[df['Label'] == 0][:200000]
-ddos = df[df['Label'] == 1][:200000]
-dos = df[df['Label'] == 2][:200000]
-bruteforce = df[df['Label'] == 3][:200000]
-infilteration = df[df['Label'] == 4][:200000]
+if(type == 'multi'):
+    ddos = df[df['Label'] == 1][:200000]
+    dos = df[df['Label'] == 2][:200000]
+    bruteforce = df[df['Label'] == 3][:200000]
+    infilteration = df[df['Label'] == 4][:200000]
 
-merge = [
-    benign, ddos, dos, bruteforce, infilteration
-]
+    merge = [
+        benign, ddos, dos, bruteforce, infilteration
+    ]
+
+if(type == 'binary'):
+    attack = df[df['Label'] == 1][:200000]
+
+    merge = [
+        benign, attack
+    ]
+ 
 df = pd.concat(merge)
 del merge
 # print(df['Label'].value_counts())
@@ -122,7 +151,8 @@ df_final = X_res.copy()
 #print(df_final.info())
 
 print(bcolors.OKBLUE + "Saving as pickle" + bcolors.ENDC)
-with open(PICKLE_DIR + DATASET_NAME + '_optimized_final.pkl', 'wb') as f:
+name = '_optimized_' + type + '.pkl' 
+with open(PICKLE_DIR + DATASET_NAME + name, 'wb') as f:
     pickle.dump(df_final, f)
 
 print(bcolors.OKGREEN + "Done" + bcolors.ENDC)

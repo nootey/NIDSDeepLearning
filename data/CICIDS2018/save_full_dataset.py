@@ -192,7 +192,7 @@ df = df.drop(["Timestamp"], axis=1)
 
 #save dataset
 print(bcolors.WARNING + "Saving as pickle" + bcolors.ENDC)
-with open(PICKLE_DIR + DATASET_NAME + '_optimized.pkl', 'wb') as f:
+with open(PICKLE_DIR + DATASET_NAME + '_base.pkl', 'wb') as f:
     pickle.dump(df, f)
 
 print(bcolors.OKGREEN + "Done" + bcolors.ENDC)

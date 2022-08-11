@@ -32,11 +32,11 @@ ROOT_DIR = "D:/School/diplomska_ml/"
 DATASET_DIR = ROOT_DIR + 'datasets/'
 MODEL_DIR = ROOT_DIR + 'saved_models/'
 DATA_DIR = ROOT_DIR + 'data/'
-DATASET_NAME = 'CICIDS2018'
+DATASET_NAME = 'NSL_KDD'
 PICKLE_DIR = DATASET_DIR + DATASET_NAME + '/'
 PICKLE_DIR = DATASET_DIR + DATASET_NAME + '/'
 
-type = 'multi'
+type = 'binary'
 
 X_test_name = type + '_X_test.pkl'
 y_test_name = type + '_y_test.pkl'
@@ -48,27 +48,23 @@ with open(DATA_DIR + DATASET_NAME + '/' + X_test_name, 'rb') as f:
 with open(DATA_DIR + DATASET_NAME + '/' + y_test_name, 'rb') as f:
     y_test = pickle.load(f)
 
-
-print(bcolors.OKBLUE + "Load model" + bcolors.ENDC)
+print(y_test.shape)
+print(bcolors.WARNING + "Load model" + bcolors.ENDC)
 model = keras.models.load_model(MODEL_DIR + '/' + DATASET_NAME + '_' + type)
 
-batch_size=10
-
-print(bcolors.OKBLUE + "Predict result" + bcolors.ENDC)
+print(bcolors.WARNING + "Predict result" + bcolors.ENDC)
 # Measure model accuracy
 predictions = model.predict(
     x=X_test,
-    batch_size=batch_size,
+    batch_size=32,
     verbose=1
 )
 rounded_predictions = np.argmax(predictions,axis=1)
 
-print(bcolors.OKBLUE + "Plot confusion matrix" + bcolors.ENDC)
+print(bcolors.WARNING + "Plot confusion matrix" + bcolors.ENDC)
 # create the confusion matrix
 
-# attack_label = ['Benign', 'DDOS attack-HOIC', 'Bot', 'FTP-BruteForce', 'SSH-Bruteforce',
-# 'DoS attacks-GoldenEye', 'DoS attacks-Slowloris', 'DDOS attack-LOIC-UDP', 'Brute Force -Web', 'Brute Force -XSS', 'SQL Injection']
-if(type=='multi'): attack_label = ['Normal', 'DDOS', 'Dos', 'BruteForce', 'Infilteration']
+if(type=='multi'): attack_label = ['Normal', 'Dos', 'Probe', 'U2R', 'R2L']
 if(type=='binary'): attack_label = ['Normal', 'Attack']
 
 con_mat = tf.math.confusion_matrix(labels=y_test.argmax(axis=1), predictions=rounded_predictions).numpy()

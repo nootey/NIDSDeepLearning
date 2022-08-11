@@ -1,2 +1,4 @@
 datasets/*
 saved_models/*
+data/CICIDS2018/*pkl
+data/NSL_KDD/*pkl
