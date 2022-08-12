@@ -53,4 +53,5 @@ sns.heatmap(con_mat_df, annot=True, cmap=plt.get_cmap(color))
 plt.tight_layout()
 plt.ylabel("True label")
 plt.xlabel("Predicted label")
-plt.show()  
+sub_folder = 'epochs' + str(NUM_EPOCHS_NSL) + '_batchsize' + str(BATCH_SIZE_NSL) + '_' + CLASSIFIER_TYPE
+plt.savefig(os.path.join(RESULT_DIR_NSL, sub_folder  + '.png'))

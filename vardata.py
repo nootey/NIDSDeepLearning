@@ -21,6 +21,7 @@ y_test_name = CLASSIFIER_TYPE + '_y_test.pkl'
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATASET_DIR = os.path.join(ROOT_DIR, "datasets")
 RESULT_DIR = os.path.join(ROOT_DIR, "main", DATASET_NAME, 'results')
+RESULT_DIR_NSL = os.path.join(ROOT_DIR, "main", DATASET_NAME_NSL, 'results')
 MODEL_DIR = os.path.join(ROOT_DIR, 'saved_models')
 MODEL_HISTORY_DIR = os.path.join(ROOT_DIR, "model_history")
 DATA_DIR = os.path.join(ROOT_DIR, "main", DATASET_NAME, 'data')
