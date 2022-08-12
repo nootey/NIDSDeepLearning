@@ -3,3 +3,5 @@ saved_models/*
 model_history/*
 main/CICIDS2018/data/test/*pkl
 main/NSL_KDD/data/test/*pkl
+__pycache__
+main/CICIDS2018/__pycache__
