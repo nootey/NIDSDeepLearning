@@ -2,7 +2,7 @@ import os
 
 # vars
 CLASSIFIER_TYPE = 'multi'
-NUM_EPOCHS = 3
+NUM_EPOCHS = 5
 BATCH_SIZE = 32
 NUM_FOLDS = 3
 OPTIMIZER = 'adam'
@@ -18,6 +18,7 @@ y_test_name = CLASSIFIER_TYPE + '_y_test.pkl'
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATASET_DIR = os.path.join(ROOT_DIR, "datasets")
 MODEL_DIR = os.path.join(ROOT_DIR, "saved_models")
+MODEL_HISTORY_DIR = os.path.join(ROOT_DIR, "model_history")
 DATA_DIR = os.path.join(ROOT_DIR, "main", DATASET_NAME, 'data')
 PICKLE_DIR = os.path.join(ROOT_DIR, DATASET_NAME)
 OPTIMIZED_DATASET_PATH = os.path.join(DATASET_DIR, DATASET_NAME, DATASET_NAME + name)
