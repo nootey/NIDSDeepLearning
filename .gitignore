@@ -2,4 +2,4 @@ datasets/*
 saved_models/*
 model_history/*
 main/CICIDS2018/data/test/*pkl
-data/NSL_KDD/*pkl
+main/NSL_KDD/data/test/*pkl

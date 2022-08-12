@@ -60,12 +60,14 @@ for train_index, test_index in sss.split(X=np.zeros(normalized_features.shape[0]
     y_train, y_test = dummy_labels[train_index], dummy_labels[test_index]
 
 
-# print(bcolors.OKBLUE + "Saving test data" + bcolors.ENDC)
-# with open(os.path.join(DATA_DIR, 'test', X_test_name), 'wb') as f:
-#     pickle.dump(X_test, f)
+print(bcolors.OKBLUE + "Saving test data" + bcolors.ENDC)
+X_test_val_name = CLASSIFIER_TYPE  + '_X_test.pkl'
+y_test_val_name = CLASSIFIER_TYPE + '_y_test.pkl'
+with open(os.path.join(DATA_DIR, 'test', X_test_val_name), 'wb') as f:
+    pickle.dump(X_test, f)
 
-# with open(os.path.join(DATA_DIR, 'test', y_test_name), 'wb') as f:
-#     pickle.dump(y_test, f)
+with open(os.path.join(DATA_DIR, 'test', y_test_val_name), 'wb') as f:
+    pickle.dump(y_test, f)
 
 print('REEEE', y_train.shape)
 

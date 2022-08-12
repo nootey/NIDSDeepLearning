@@ -19,7 +19,7 @@ with open(os.path.join(DATA_DIR, 'test', y_test_name), 'rb') as f:
     y_test = pickle.load(f)
 
 print(bcolors.OKBLUE + "Load model" + bcolors.ENDC)
-model = keras.models.load_model(os.path.join(MODEL_DIR, DATASET_NAME, '_', CLASSIFIER_TYPE))
+model = keras.models.load_model(os.path.join(MODEL_DIR, DATASET_NAME + '_' + CLASSIFIER_TYPE))
 
 print(bcolors.OKBLUE + "Predict result" + bcolors.ENDC)
 # Measure model accuracy
