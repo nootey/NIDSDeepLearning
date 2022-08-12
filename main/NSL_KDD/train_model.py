@@ -1,3 +1,8 @@
+import sys
+import os
+sys.path.append('../..')
+from vardata import *
+
 # Import modules
 import numpy as np 
 import pandas as pd 
@@ -15,26 +20,6 @@ from tensorflow.keras.optimizers import Adam
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# define colors (for readable prints)
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-
-# define paths
-ROOT_DIR = "D:/School/diplomska_ml/"
-DATASET_DIR = ROOT_DIR + 'datasets/'
-MODEL_DIR = ROOT_DIR + 'saved_models/'
-DATASET_NAME = 'NSL_KDD'
-DATA_DIR = ROOT_DIR + 'data/'
-type = 'binary'
-
 # helper functions
 def model_config(input_shape,output_shape):
     model = Sequential()
@@ -42,12 +27,12 @@ def model_config(input_shape,output_shape):
     model.add(Dense(128, activation='relu'))
     model.add(Dense(output_shape,activation='softmax'))
 
-    if type == 'multi':
+    if CLASSIFIER_TYPE == 'multi':
         print(bcolors.OKBLUE + 'Categorical Cross-Entropy Loss Function' + bcolors.ENDC)
         model.compile(optimizer='adam',
                     loss='categorical_crossentropy',
                     metrics=['accuracy'])
-    if type == 'binary':
+    if CLASSIFIER_TYPE == 'binary':
         print(bcolors.OKBLUE + 'Binary Cross-Entropy Loss Function' + bcolors.ENDC)
         model.compile(optimizer='adam',
                 loss='binary_crossentropy',
@@ -61,15 +46,14 @@ def model_early_stop():
         monitor="val_loss",
         min_delta=0,
         patience=10,
-        verbose=1,
+        verbose=VERBOSE,
         mode="auto",
         baseline=None,
         restore_best_weights=True,
     )
     return early_stopper
 
-# encode a numeric column as a zscore
-def encode_numeric_zscore(df, name, mean=None, standard_deviation=None):
+def normalize_features(df, name, mean=None, standard_deviation=None):
     
     # define mean
     if mean is None:
@@ -82,8 +66,7 @@ def encode_numeric_zscore(df, name, mean=None, standard_deviation=None):
     # calculate zscore
     df[name] = (df[name] - mean) / standard_deviation
     
-# encode text values as dummy variables (RGB = [1,0,0], [0,1,0], [0,0,1])
-def encode_text_dummy(df, name):
+def encode_labels(df, name):
     # use built in pandas function for converting to dummiy
     dummies = pd.get_dummies(df[name])
     # extract values from entities and encode them 
@@ -93,15 +76,15 @@ def encode_text_dummy(df, name):
     df.drop(name, axis=1, inplace=True)
 
 # classify attacks as possible attack types
-def map_attack (attack):
-    if(type == 'multi'):
+def classifiy_attacks (attack):
+    if(CLASSIFIER_TYPE == 'multi'):
         if attack in dos: att_type = 1
         elif attack in probe: att_type = 2
         elif attack in user_to_root: att_type = 3
         elif attack in root_to_local: att_type = 4
         else: att_type = 0 
         
-    if(type == 'binary'):
+    if(CLASSIFIER_TYPE == 'binary'):
         if attack in dos: att_type = 1
         elif attack in probe: att_type = 1
         elif attack in user_to_root: att_type = 1
@@ -112,8 +95,8 @@ def map_attack (attack):
 
 # fetch the training file
 print(bcolors.WARNING + "Reading file" + bcolors.ENDC)
-df_train = pd.read_csv(DATASET_DIR + DATASET_NAME + '/KDDTrain+.txt')
-df_test = pd.read_csv(DATASET_DIR + DATASET_NAME + '/KDDTest+.txt')
+df_train = pd.read_csv(os.path.join(DATASET_DIR, DATASET_NAME_NSL, 'KDDTrain+.txt'))
+df_test = pd.read_csv(os.path.join(DATASET_DIR, DATASET_NAME_NSL, 'KDDTest+.txt'))
 
 # define columns
 columns = ['duration', 'protocol_type', 'service', 'flag', 'src_bytes',
@@ -153,10 +136,10 @@ user_to_root = ["buffer_overflow","loadmodule","perl","ps","rootkit","sqlattack"
 root_to_local = ["ftp_write","guess_passwd","httptunnel","imap","multihop","named","phf","sendmail","Snmpgetattack","spy","snmpguess","warezclient","warezmaster","xlock","xsnoop"]
 
 # map attack types to df, based off attack label
-attack_map = base_df.attack.apply(map_attack)
-base_df['label'] = attack_map
+attack_classifier = base_df.attack.apply(classifiy_attacks)
+base_df['label'] = attack_classifier
 
-base_df.head()
+# print(base_df.head)
 
 # define arrays to split numeric/non-numeric data to pass to df
 encode_non_numeric = ['protocol_type', 'service', 'flag', 'land', 'logged_in', 'is_host_login', 'is_guest_login']
@@ -172,17 +155,17 @@ for item in base_df.columns:
 print(bcolors.WARNING + "Normalizing data" + bcolors.ENDC)
 # encode numeric df items as zscores
 for column in encode_numeric:
-    encode_numeric_zscore(base_df,column) 
+    normalize_features(base_df,column) 
 
 # encode non numeric df items as dummie variables
 for column in encode_non_numeric:
-    encode_text_dummy(base_df,column)
+    encode_labels(base_df,column)
 
 # drop possible rows that are "NA" -> none in this dataset, but better safe than sorry
 base_df.dropna(inplace=True,axis=1)
 
 
-#base_df.groupby('label')['label'].count()
+#print(base_df.groupby('label')['label'].count())
 
 print(bcolors.WARNING + "Prep X and y" + bcolors.ENDC)
 # Convert to Numpy array
@@ -195,19 +178,17 @@ y = pd.get_dummies(base_df['label']).values
 print(bcolors.WARNING + "Train test split" + bcolors.ENDC)
 # Create a train/test split
 # stratify makes sure that data is correctly proportionalized
-X_train, X_val, y_train, y_val = train_test_split(
+X_train, X_test, y_train, y_test = train_test_split(
 X, y, test_size=0.2, random_state=42, stratify=y) 
 print(X_train.shape, y_train.shape)
-print(X_val.shape, y_val.shape)
+print(X_test.shape, y_test.shape)
 
-X_test_name = type + '_X_test.pkl'
-y_test_name = type + '_y_test.pkl'
 print(bcolors.OKBLUE + "Saving test data" + bcolors.ENDC)
-with open(DATA_DIR + DATASET_NAME + '/' + X_test_name, 'wb') as f:
-    pickle.dump(X_val, f)
+with open(os.path.join(DATA_DIR_NSL, 'test', X_test_name), 'wb') as f:
+    pickle.dump(X_test, f)
 
-with open(DATA_DIR + DATASET_NAME + '/' + y_test_name, 'wb') as f:
-    pickle.dump(y_val, f)
+with open(os.path.join(DATA_DIR_NSL, 'test', y_test_name), 'wb') as f:
+    pickle.dump(y_test, f)
 
 print(bcolors.WARNING + "Fit model" + bcolors.ENDC)
 model = model_config(X.shape[1], y.shape[1])
@@ -216,14 +197,14 @@ model = model_config(X.shape[1], y.shape[1])
 history = model.fit(
     X_train, 
     y_train,
-    validation_data=(X_val, y_val),
+    validation_data=(X_test, y_test),
     shuffle=True,
-    verbose=1,
-    batch_size=32, 
-    epochs=25,
+    verbose=VERBOSE,
+    batch_size=BATCH_SIZE_NSL, 
+    epochs=NUM_EPOCHS_NSL,
     callbacks=[model_early_stop()],
 )
 
 print(bcolors.WARNING + "Save model" + bcolors.ENDC)
-model.save(MODEL_DIR + '/' + DATASET_NAME + '_' + type)
+model.save(os.path.join(MODEL_DIR, DATASET_NAME_NSL, '_', CLASSIFIER_TYPE))
 
