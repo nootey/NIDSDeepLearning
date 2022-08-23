@@ -1,13 +1,23 @@
 import os
 
 # vars
-CLASSIFIER_TYPE = 'multi'
-NUM_EPOCHS = 30
+# multi = multi-label-classification; binary = binary classification
+CLASSIFIER_TYPE = 'multi' 
+# 1 for grouping attack types, 0 for including all attack types
+GROUP_TYPE = 1 
+# number of epoch for cic18 dataset
+NUM_EPOCHS = 10 
+ # number of epoch for nsl-kdd dataset
 NUM_EPOCHS_NSL = 50
-BATCH_SIZE = 64
+# batch size for cic18 dataset
+BATCH_SIZE = 128
+# batch size for nsl-kdd dataset
 BATCH_SIZE_NSL = 64
+# number of repetitions for cross-validation
 NUM_FOLDS = 3
+# optimizer
 OPTIMIZER = 'adam'
+# verbose level
 VERBOSE = 1
 
 # data names

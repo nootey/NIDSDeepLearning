@@ -15,10 +15,10 @@ import matplotlib.pyplot as plt
 evals = list()
 
 for i in range(NUM_FOLDS):
-    model = keras.models.load_model(os.path.join(MODEL_DIR, DATASET_NAME + '_' + CLASSIFIER_TYPE + '_' + str(i)))
+    model = keras.models.load_model(os.path.join(MODEL_DIR, DATASET_NAME + '_' + CLASSIFIER_TYPE + '_' + str(GROUP_TYPE) + '_' + str(i)))
     
-    X_test_val_name = CLASSIFIER_TYPE + str(i) + '_X_test.pkl'
-    y_test_val_name = CLASSIFIER_TYPE + str(i) + '_y_test.pkl'
+    X_test_val_name = CLASSIFIER_TYPE + str(GROUP_TYPE) + '_' + str(i) + '_X_test.pkl'
+    y_test_val_name = CLASSIFIER_TYPE + str(GROUP_TYPE) + '_' + str(i) + '_y_test.pkl'
     with open(os.path.join(DATA_DIR, 'test', X_test_val_name), 'rb') as f:
         X_test = pickle.load(f)
 
@@ -26,15 +26,15 @@ for i in range(NUM_FOLDS):
         y_test = pickle.load(f)
     
     history = np.load(
-        os.path.join(MODEL_HISTORY_DIR, DATASET_NAME + '_' + CLASSIFIER_TYPE +  '_' + str(i) + ".npy"),
+        os.path.join(MODEL_HISTORY_DIR, DATASET_NAME + '_' + CLASSIFIER_TYPE + '_' + str(GROUP_TYPE) + '_' + str(i) + ".npy"),
         allow_pickle=True,
     )
 
     print(bcolors.OKBLUE + "Evaluating model: " + str(i) + bcolors.ENDC)
     epochs = len(history.item()["accuracy"])
-    kys = model.evaluate(X_test, y_test, verbose=VERBOSE)
-    kys.append(epochs)
-    evals.append(kys)
+    single_eval = model.evaluate(X_test, y_test, verbose=VERBOSE)
+    single_eval.append(epochs)
+    evals.append(single_eval)
 
     df = pd.DataFrame(evals)
     df.rename(columns={0: "Loss", 1: "Accuracy", 2: "Epochs to learn"}, inplace=True)
@@ -51,7 +51,11 @@ for i in range(NUM_FOLDS):
 
     print(bcolors.OKBLUE + "Save confusion matrix" + bcolors.ENDC)
 
-    if(CLASSIFIER_TYPE=='multi'): attack_label = ['Normal', 'DDOS', 'Dos', 'BruteForce', 'Infilteration']
+    if(CLASSIFIER_TYPE=='multi'): 
+        if(GROUP_TYPE == 1):
+            attack_label = ['Normal', 'DDOS', 'Dos', 'BruteForce', 'Infilteration']
+        else:
+            attack_label = ['Normal', 'FTP-BruteForce', 'SSH-BruteForce', 'DDOS-HOIC', 'Infilteration', 'DoS-GoldenEye', 'DoS-Slowloris', 'DDOS-LOIC-UDP', 'BruteForce-Web', 'BruteForce-XSS', 'SQL-Injection']
     if(CLASSIFIER_TYPE=='binary'): attack_label = ['Normal', 'Attack']
 
     con_mat = tf.math.confusion_matrix(labels=y_test.argmax(axis=1), predictions=rounded_predictions).numpy()
@@ -69,7 +73,7 @@ for i in range(NUM_FOLDS):
     plt.ylabel("True label")
     plt.xlabel("Predicted label")
     
-    sub_folder = 'epochs' + str(NUM_EPOCHS) + '_batchsize' + str(BATCH_SIZE) + '_' + CLASSIFIER_TYPE + str(i)
+    sub_folder = 'epochs' + str(NUM_EPOCHS) + '_batchsize' + str(BATCH_SIZE) + '_' + CLASSIFIER_TYPE + str(i) + '_grouping' + '_' + str(GROUP_TYPE)
     # os.mkdir(sub_folder)
     plt.savefig(os.path.join(RESULT_DIR, sub_folder  + '.png'))
     # plt.show() 

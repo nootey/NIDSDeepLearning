@@ -1,3 +1,4 @@
+import ssl
 import sys
 import os
 sys.path.append('../..')
@@ -19,7 +20,7 @@ with open(os.path.join(DATA_DIR, 'test', y_test_name), 'rb') as f:
     y_test = pickle.load(f)
 
 print(bcolors.OKBLUE + "Load model" + bcolors.ENDC)
-model = keras.models.load_model(os.path.join(MODEL_DIR, DATASET_NAME + '_' + CLASSIFIER_TYPE))
+model = keras.models.load_model(os.path.join(MODEL_DIR, DATASET_NAME, '_' + CLASSIFIER_TYPE + '_' + str(GROUP_TYPE)))
 
 print(bcolors.OKBLUE + "Predict result" + bcolors.ENDC)
 # Measure model accuracy
@@ -30,12 +31,17 @@ predictions = model.predict(
 )
 rounded_predictions = np.argmax(predictions,axis=1)
 
-print(bcolors.OKBLUE + "Plot confusion matrix" + bcolors.ENDC)
+print(bcolors.OKBLUE + "Save confusion matrix" + bcolors.ENDC)
 # create the confusion matrix
 
 # attack_label = ['Benign', 'DDOS attack-HOIC', 'Bot', 'FTP-BruteForce', 'SSH-Bruteforce',
 # 'DoS attacks-GoldenEye', 'DoS attacks-Slowloris', 'DDOS attack-LOIC-UDP', 'Brute Force -Web', 'Brute Force -XSS', 'SQL Injection']
-if(CLASSIFIER_TYPE=='multi'): attack_label = ['Normal', 'DDOS', 'Dos', 'BruteForce', 'Infilteration']
+
+if(CLASSIFIER_TYPE=='multi'): 
+    if(GROUP_TYPE == 1):
+        attack_label = ['Normal', 'DDOS', 'Dos', 'BruteForce', 'Infilteration']
+    else:
+        attack_label = ['Normal', 'FTP-BruteForce', 'SSH-BruteForce', 'DDOS-HOIC', 'Infilteration', 'DoS-GoldenEye', 'DoS-Slowloris', 'DDOS-LOIC-UDP', 'BruteForce-Web', 'BruteForce-XSS', 'SQL-Injection']
 if(CLASSIFIER_TYPE=='binary'): attack_label = ['Normal', 'Attack']
 
 con_mat = tf.math.confusion_matrix(labels=y_test.argmax(axis=1), predictions=rounded_predictions).numpy()
@@ -52,4 +58,5 @@ sns.heatmap(con_mat_df, annot=True, cmap=plt.get_cmap(color))
 plt.tight_layout()
 plt.ylabel("True label")
 plt.xlabel("Predicted label")
-plt.show()  
+sub_folder = 'epochs' + str(NUM_EPOCHS) + '_batchsize' + str(BATCH_SIZE) + '_' + CLASSIFIER_TYPE + '_grouping' + '_' + str(GROUP_TYPE)
+plt.savefig(os.path.join(RESULT_DIR, sub_folder  + '.png'))

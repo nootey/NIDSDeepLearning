@@ -169,7 +169,7 @@ print(df.info())
 
 print(df['Label'].value_counts())
 
-df = df.drop(["Timestamp"], axis=1)
+df = df.drop(["Timestamp", "Down/Up Ratio"], axis=1)
 
 #save full dataset
 # print(bcolors.WARNING + "Saving as pickle" + bcolors.ENDC)
