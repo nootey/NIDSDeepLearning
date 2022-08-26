@@ -16,7 +16,7 @@ from imblearn.over_sampling import SMOTE
 def clean_column(column):
     column = column.strip(' ')
     column = column.replace('/', '_')
-    column = column.replace(' ', '_')
+    column = column.replace('', '_')
     column = column.lower()
     return column
 
