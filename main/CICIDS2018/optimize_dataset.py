@@ -12,28 +12,12 @@ import matplotlib.pyplot as plt
 import os
 from imblearn.over_sampling import SMOTE 
 
-#helper functions
-def clean_column(column):
-    column = column.strip(' ')
-    column = column.replace('/', '_')
-    column = column.replace('', '_')
-    column = column.lower()
-    return column
 
 print(bcolors.OKBLUE + "Loading pickle df" + bcolors.ENDC)
 with open(os.path.join(DATASET_DIR, DATASET_NAME, DATASET_NAME + '_base.pkl'), 'rb') as f:
     df = pickle.load(f)
 
-# print(df['Label'].value_counts())
-
-#plot number of recorded attacks
-# make a plot number of labels
-# sns.set(rc={'figure.figsize':(12, 6)})
-# plt.xlabel('Attack Type')
-# sns.set_theme()
-# ax = sns.countplot(x='Label', data=df)
-# ax.set(xlabel='Attack Type', ylabel='Number of Attacks')
-# plt.show()
+print(df['Label'].value_counts())
 
 #check for null values
 #df.isna().sum().to_numpy()
@@ -50,7 +34,7 @@ print(df.isna().sum().sum())
 print(bcolors.OKBLUE + "Mapping attack types" + bcolors.ENDC)
 # categorize attack type map
 if(CLASSIFIER_TYPE == 'multi'):
-    if(GROUP_TYPE == 1):
+    if(GROUP_TYPE == 'grouped'):
         attack_group = {
             'Benign': 0,
             'DDOS attack-HOIC': 1,
@@ -67,17 +51,17 @@ if(CLASSIFIER_TYPE == 'multi'):
         }
     else:
         attack_group = {
-            'Benign': 1,
-            'FTP-BruteForce': 2,
-            'SSH-Bruteforce': 3,
-            'DDOS attack-HOIC': 4,
-            'Infilteration': 5,
-            'DoS attacks-GoldenEye' : 6,
-            'DoS attacks-Slowloris': 7,
-            'DDOS attack-LOIC-UDP': 8,
-            'Brute Force -Web': 9,
-            'Brute Force -XSS': 10,
-            'SQL Injection': 11
+            'Benign': 0,
+            'FTP-BruteForce': 1,
+            'SSH-Bruteforce': 2,
+            'DDOS attack-HOIC': 3,
+            'Infilteration': 4,
+            'DoS attacks-GoldenEye' : 5,
+            'DoS attacks-Slowloris': 6,
+            'DDOS attack-LOIC-UDP': 7,
+            'Brute Force -Web': 8,
+            'Brute Force -XSS': 9,
+            'SQL Injection': 10
         }
 
 if(CLASSIFIER_TYPE == 'binary'):
@@ -118,38 +102,37 @@ print(df.isna().sum().sum())
 
 print(bcolors.OKBLUE + "Re-sampling data" + bcolors.ENDC)
 
-benign = df[df['Label'] == 0][:100000]
 
 if(CLASSIFIER_TYPE == 'multi'):
-
-    if(GROUP_TYPE == 1):
-        ddos = df[df['Label'] == 1][:100000]
+    benign = df[df['Label'] == 0][:150000]
+    if(GROUP_TYPE == 'grouped'):
+        ddos = df[df['Label'] == 1][:150000]
         dos = df[df['Label'] == 2]
-        bruteforce = df[df['Label'] == 3][:100000]
+        bruteforce = df[df['Label'] == 3][:150000]
         infilteration = df[df['Label'] == 4]
         merge = [
         benign, ddos, dos, bruteforce, infilteration
                 ]
     else:
-        benign = df[df['Label'] == 1][:100000]
-        hoic = df[df['Label'] == 2][:100000]
-        bot = df[df['Label'] == 3][:100000]
-        ftp_brute = df[df['Label'] == 4][:100000]
-        ssh_brute = df[df['Label'] == 5][:100000]
-        dos_eye = df[df['Label'] == 6]
-        dos_slow = df[df['Label'] == 7]
-        ddos = df[df['Label'] == 8]
-        brute_web = df[df['Label'] == 9]
-        brute_xss = df[df['Label'] == 10]
-        sql = df[df['Label'] == 11]
+        benign = df[df['Label'] == 0][:150000]
+        hoic = df[df['Label'] == 1][:150000]
+        bot = df[df['Label'] == 2][:150000]
+        ftp_brute = df[df['Label'] == 3][:150000]
+        ssh_brute = df[df['Label'] == 4][:150000]
+        dos_eye = df[df['Label'] == 5]
+        dos_slow = df[df['Label'] == 6]
+        ddos = df[df['Label'] == 7]
+        brute_web = df[df['Label'] == 8]
+        brute_xss = df[df['Label'] == 9]
+        sql = df[df['Label'] == 10]
         merge = [
             benign, hoic, bot, ftp_brute, ssh_brute, dos_eye, dos_slow, ddos, brute_web, brute_xss, sql
         ]
 
 
 if(CLASSIFIER_TYPE == 'binary'):
-    attacks = df[df['Label'] == 1][:150000]
-
+    attacks = df[df['Label'] == 1][:1000000]
+    benign = df[df['Label'] == 0][:1000000]
     merge = [
         benign, attacks
     ]
@@ -171,7 +154,5 @@ print(bcolors.OKBLUE + "Saving optimized dataset" + bcolors.ENDC)
 # name = '_optimized_' + CLASSIFIER_TYPE + '.pkl' 
 # with open(os.path.join(DATASET_DIR, DATASET_NAME, DATASET_NAME + name), 'wb') as f:
 #     pickle.dump(df_final, f)
-name = '_g_'+ str(GROUP_TYPE) + '_optimized_' + CLASSIFIER_TYPE + '.csv' 
-df_final.to_csv(os.path.join(DATASET_DIR, DATASET_NAME, DATASET_NAME + name))
-
+df_final.to_csv(os.path.join(DATASET_DIR, DATASET_NAME, DATASET_NAME + OPTIMIZED_DATASET_NAME))
 print(bcolors.OKGREEN + "Done" + bcolors.ENDC)

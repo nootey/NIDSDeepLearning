@@ -2,11 +2,13 @@ import os
 
 # vars
 # multi = multi-label-classification; binary = binary classification
-CLASSIFIER_TYPE = 'multi' 
+CLASSIFIER_TYPE = 'binary' 
+# CLASSIFIER_TYPE = 'multi' 
 # 1 for grouping attack types, 0 for including all attack types
-GROUP_TYPE = 0 
+# GROUP_TYPE = 'ungrouped' 
+GROUP_TYPE = 'grouped' 
 # number of epoch for cic18 dataset
-NUM_EPOCHS = 10 
+NUM_EPOCHS = 50
  # number of epoch for nsl-kdd dataset
 NUM_EPOCHS_NSL = 50
 # batch size for cic18 dataset
@@ -23,6 +25,7 @@ VERBOSE = 1
 # data names
 DATASET_NAME = 'CICIDS2018'
 DATASET_NAME_NSL = 'NSL_KDD'
+OPTIMIZED_DATASET_NAME = '_' + GROUP_TYPE + '_'+ CLASSIFIER_TYPE + '_optimized_' + '.csv'
 name = '_optimized_' + CLASSIFIER_TYPE + '.pkl' 
 X_test_name = CLASSIFIER_TYPE + '_X_test.pkl'
 y_test_name = CLASSIFIER_TYPE + '_y_test.pkl'

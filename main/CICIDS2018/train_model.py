@@ -13,6 +13,7 @@ from keras.utils.np_utils import to_categorical, normalize
 from tensorflow import keras
 import pandas as pd 
 import tensorflow as tf
+import matplotlib.pyplot as plt
 
 # optimized, but limited dataset
 # print(bcolors.OKBLUE + "Reading file" + bcolors.ENDC)
@@ -22,8 +23,7 @@ import tensorflow as tf
 print(bcolors.OKBLUE + "Loading optimized dataset" + bcolors.ENDC)
 # with open(OPTIMIZED_DATASET_PATH, 'rb') as f:
 #     df = pickle.load(f)
-name = '_g_'+ str(GROUP_TYPE) + '_optimized_' + CLASSIFIER_TYPE + '.csv' 
-df = pd.read_csv(os.path.join(DATASET_DIR, DATASET_NAME, DATASET_NAME + name))
+df = pd.read_csv(os.path.join(DATASET_DIR, DATASET_NAME, DATASET_NAME + OPTIMIZED_DATASET_NAME))
 
 #helper functions 
 def model_config(inputDim=-1, out_shape=(-1,)):
@@ -85,12 +85,12 @@ with open(os.path.join(DATA_DIR, 'test', X_test_val_name), 'wb') as f:
 with open(os.path.join(DATA_DIR, 'test', y_test_val_name), 'wb') as f:
     pickle.dump(y_test, f)
 
-print('REEEE', y_train.shape)
+print('SHAPE:', y_train.shape)
 
 print(bcolors.OKBLUE + "Fit model" + bcolors.ENDC)
 model = model_config(inputDim, y_train.shape)
 
-model.fit(
+history = model.fit(
     x=X_train, 
     y=y_train, 
     epochs=NUM_EPOCHS, 
@@ -100,5 +100,6 @@ model.fit(
     callbacks=[model_early_stop()])
 
 print(bcolors.OKBLUE + "Save model" + bcolors.ENDC)
-model.save(os.path.join(MODEL_DIR, DATASET_NAME, '_' + CLASSIFIER_TYPE + '_' + str(GROUP_TYPE)))
+model.save(os.path.join(MODEL_DIR, GROUP_TYPE, DATASET_NAME, CLASSIFIER_TYPE + '_e_' + str(NUM_EPOCHS) + '_b_' + str(BATCH_SIZE)))
 
+np.save(os.path.join(DATA_DIR, 'history', CLASSIFIER_TYPE + '_e_' + str(NUM_EPOCHS) + '_b_' + str(BATCH_SIZE) + '.npy'), history.history)
