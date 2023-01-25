@@ -2,11 +2,11 @@ import os
 
 # vars
 # multi = multi-label-classification; binary = binary classification
-CLASSIFIER_TYPE = 'binary' 
-# CLASSIFIER_TYPE = 'multi' 
+# CLASSIFIER_TYPE = 'binary' 
+CLASSIFIER_TYPE = 'multi' 
 # 1 for grouping attack types, 0 for including all attack types
-# GROUP_TYPE = 'ungrouped' 
-GROUP_TYPE = 'grouped' 
+GROUP_TYPE = 'ungrouped' 
+# GROUP_TYPE = 'grouped' 
 # number of epoch for cic18 dataset
 NUM_EPOCHS = 50
  # number of epoch for nsl-kdd dataset

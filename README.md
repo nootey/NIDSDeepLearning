@@ -1,6 +1,13 @@
 # Model strojnega učenja za ugotavljanje in potencialno preprečevanje napadov na omrežja
 
-Cilj naloge je narediti model sposoben identificiranja napadov na omrežje, ter opozoriti sistem oz. omrežnega administratorja na le ta napad, za hitrejše ukrepanje. 
-Model je testiran na dveh virih podatkov:
-1. Zelo znan dataset NSL-KDD, ki je optimizirana verzija KDD-99 dataseta, ki je še vedno "benchmark" za testiranje strojnega učenja, kljub starosti.
-2. CICIDS2018, ki je strukturno podoben NSL-KDD, vendar je zajet z modernimi network flow-i, ter primeren za moderen model strojnega učenja.
+Široka uporaba medsebojno povezanih računalniških sistemov je postala temelj izboljšave naših življenj.
+Hkrati pa je izpostavili ranljivosti, ki jih je mogoče izkoristiti in presegajo človeški nadzor.
+Zaradi teh ranljivosti, so varnostni sistemi na področju kibernetske varnosti bistveni, za
+varno komunkacijo med omrežji. 
+
+Bliskovit napredek na podorčju omrežnih komunikacij je povzočil ogromno povečanje velikosti omrežij
+in generiranih podatkov. Posledično nastajajo številni novi omrežni napadi, ki predstavljajo izziv za varnost omrežja, ter za natančno zaznavanje vdorov.
+Eden izmed mehanizmov, ki nam omogoča obrambo pred temi napadi, so sistemi za zaznavanje vdorov (IDS). 
+
+Glede na pričakovano pospešitev in povečanje računalniških groženj, v tej nalogi raziskujem uporabnost in zmogljivost algoritmov globokega učenja 
+na področju zaznavanja vdorov v omrežje.

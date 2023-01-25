@@ -11,6 +11,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow import keras
+from sklearn.metrics import f1_score
 
 def plot_history(history):
 
@@ -82,3 +83,4 @@ plt.tight_layout()
 plt.ylabel("True label")
 plt.xlabel("Predicted label")
 plt.savefig(os.path.join(RESULT_DIR, 'prediction', GROUP_TYPE, CLASSIFIER_TYPE, 'e_' + str(NUM_EPOCHS) + '_b_' + str(BATCH_SIZE)  + '.png'))
+
