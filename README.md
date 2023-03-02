@@ -1,27 +1,6 @@
-# Diplomsko delo
+# Deep Learning Network Intrusion Detection System
 
-<p> Diplomsko delo, narejno za fakulteto za elektrotehniko, v letu 2022/2023 </p>
-
-<p>
-
-Naloga je javno dostopno na:
-
-<details> 
-  <summary>Revelio! </summary>
-
-   &nbsp; &nbsp; &nbsp; &nbsp; ~~REDACTED~~
-
-</details>
-
-</p>
-
-## Povzetek
-
-<p> Široka uporaba medsebojno povezanih računalniških sistemov je postala temelj izboljšave naših življenj, hkrati pa je izpostavila ranljivosti, katere je mogoče izkoristiti in presegajo človeški nadzor. Zaradi teh ranljivosti so varnostni sistemi na področju kibernetske varnosti bistveni, za varno komunikacijo med omrežji. Eden izmed mehanizmov, ki nam omogoča obrambo pred omrežnimi napadi, so sistemi za zaznavanje vdorov IDS (angl. Intrusion Detection System).</p>
-
-<p> Glede na pričakovano pospešitev in povečanje računalniških groženj v tej nalogi raziskujem uporabnost in zmogljivost algoritmov globokega učenja na področju zaznavanja vdorov v omrežje.</p>
-
-<p> Naloga opisuje implementacijo modela globokega učenja, ki je naučen na naboru podatkov CIC-IDS-2018, dostopnem na spletni strani Kaggle. Ustvarjena arhitektura globoke nevronske mreže DNN (angl. Deep neural network) je ovrednotena z različnimi metrikami, bodisi s poudarkom na hitrosti ali pa na natančnosti. Nabor podatkov je predhodno obdelan, da lahko sistem za zaznavanje vdorov deluje z manj računskimi stroški. Testiranje rezultatov je ločeno glede na dejstvo, ali je opazovan segment omrežnega prometa del napada ali pa ne.</p>
+<p> Thesis, made for the Faculty of Electrical Engineering in the year 2022/2023 </p>
 
 ## Abstract
 
